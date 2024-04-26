@@ -1,0 +1,59 @@
+﻿@page "/"
+
+<PageTitle>Terraria NPC Happiness Calculator</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<button class="btn btn-primary" @onclick="CreateVillage">Create Village</button>
+
+@foreach(Village village in villages)
+{
+    <h4>Village - @village.VillageNumber</h4>
+    <button class="btn btn-success" @onclick="() => AddNpcToVillage(village.VillageNumber, NPCIdentificationEnum.Guide)">Guide</button>
+    <button class="btn btn-success" @onclick="() => AddBiomeToVillage(village.VillageNumber, BiomesEnum.Forest)">Forest</button>
+    <div class="row">
+        @foreach (Npc npc in village.NPCs)
+        {
+            <div class="col-md-2">@npc.Name</div>
+            <div class="col-md-2">Buy Multiplier: @npc.BuyMultiplier</div>
+            <div class="col-md-2">Sell Multiplier: @npc.SellMultiplier</div>
+        }
+
+    </div>
+
+}
+
+@code {
+    List<Village> villages = new();
+    int villageNumber = 0;
+
+    private void CreateVillage()
+    {
+        villages.Add(new Village(++villageNumber));
+    }
+
+    private void RemoveVillage(Village village)
+    {
+        villages.Remove(village);
+    }
+
+    private void AddNpcToVillage(int villageNumber, NPCIdentificationEnum npcId)
+    {
+        Village village = villages.FirstOrDefault(x => x.VillageNumber == villageNumber);
+
+        village.NPCs.Add(new Npc { Id = npcId });
+
+        List<Npc> NpcHappiness = HappinessCalculator.CalculateHappiness(village);
+
+        village.NPCs.Clear();
+
+        village.NPCs.AddRange(NpcHappiness);
+    }
+
+    private void AddBiomeToVillage(int villageNumber, BiomesEnum biome)
+    {
+        Village village = villages.FirstOrDefault(x => x.VillageNumber == villageNumber);
+
+        village.Biome = biome;
+    }
+}
