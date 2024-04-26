@@ -4,12 +4,18 @@ namespace TerrariaNpcHappiness.Logic.Classes
 {
     public class Village
     {
-        public Village()
+        public Village(int? villageNumber)
         {
-            NPCs = new List<NPC>();
+            if (!villageNumber.HasValue)
+                this.VillageNumber = 1;
+            else
+                this.VillageNumber = villageNumber.Value;
+
+            NPCs = new List<Npc>();
         }
 
+        public int VillageNumber { get; set; }
         public BiomesEnum Biome { get; set; }
-        public List<NPC> NPCs { get; set; }
+        public List<Npc> NPCs { get; set; }
     }
 }

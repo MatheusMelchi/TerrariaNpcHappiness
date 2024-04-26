@@ -1,18 +1,13 @@
-﻿using System;
+﻿using EnumsNET;
 using TerrariaNpcHappiness.Logic.Enum;
-using EnumsNET;
 
 namespace TerrariaNpcHappiness.Logic.Classes
 {
-    public class NPC
+    public class Npc
     {
-        public NPC(NPCIdentificationEnum id)
-        {
-            Id = id;
-            Name = id.AsString(EnumFormat.Description);
-        }
-
         public NPCIdentificationEnum Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get { return this.Id.AsString(EnumFormat.Description); } }
+        public decimal? BuyMultiplier { get; set; }
+        public decimal? SellMultiplier { get; set; }
     }
 }

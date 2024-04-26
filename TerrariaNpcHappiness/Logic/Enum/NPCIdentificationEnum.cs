@@ -73,10 +73,13 @@ namespace TerrariaNpcHappiness.Logic.Enum
         [Description("Cyborg")]
         Cyborg = 22,
 
+        [Description("Golfer")]
+        Golfer = 23,
+
         [Description("Santa Claus")]
-        SantaClaus = 23,
+        SantaClaus = 24,
 
         [Description("Princess")]
-        Princess = 24
+        Princess = 25
     }
 }

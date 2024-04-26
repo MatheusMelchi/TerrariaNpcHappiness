@@ -6,17 +6,21 @@ namespace TerrariaNpcHappiness.Logic.Classes
     {
         private const double BaseHappiness = 1;
 
-        public Dictionary<NPCIdentificationEnum, double[]> CalculateHappiness(Village village)
+        public static List<Npc> CalculateHappiness(Village village)
         {
-            Dictionary<NPCIdentificationEnum, double[]> npcHappiness = new();
+            if (!village.NPCs.Any())
+                return new List<Npc>();
+
+            List<Npc> npcHappiness = new();
             int villageNpcAmount = village.NPCs.Count;
 
             foreach (var Npc in village.NPCs)
             {
+                Relations relations = NpcRelations.NpcRelationById(Npc.Id);
+
                 double buyMultiplier = BaseHappiness;
                 double sellMultiplier = BaseHappiness;
 
-                //
                 if ((villageNpcAmount - 1) <= 2)
                 {
                     buyMultiplier -= 0.05;
@@ -28,47 +32,48 @@ namespace TerrariaNpcHappiness.Logic.Classes
                     sellMultiplier -= 0.05;
                 }
 
-                if(village.NPCs.FirstOrDefault(x => x.Id == NPCIdentificationEnum.Princess) != null)
+                if(village.NPCs.Select(x => x.Id == NPCIdentificationEnum.Princess).Any())
                 {
                     buyMultiplier -= 0.06;
                     sellMultiplier += 0.06;
                 }
 
-                switch (Npc.Id)
+                if (relations.LikedBiomes.Contains(village.Biome))
                 {
-                    case NPCIdentificationEnum.Guide:
-                        if (village.Biome == BiomesEnum.Forest)
-                        {
-                            buyMultiplier -= 0.06;
-                            sellMultiplier += 0.06;
-                        }
-                        else if(village.Biome == BiomesEnum.Ocean)
-                        {
-                            buyMultiplier += 0.06;
-                            sellMultiplier -= 0.06;
-                        }
-
-                        foreach(var villageNpc in village.NPCs.Where(x => x.Id != Npc.Id))
-                        {
-                            if(villageNpc.Id == NPCIdentificationEnum.Princess)
-                            {
-
-                            }
-                            
-                            if(villageNpc.Id == NPCIdentificationEnum.Clothier || villageNpc.Id == NPCIdentificationEnum.Zoologist)
-                            {
-
-                            }
-
-                        }
-
-                        break;
-
-                    default:
-                        break;
+                    buyMultiplier -= 0.12;
+                    sellMultiplier += 0.14;
+                }
+                else if (relations.DislikedBiomes.Contains(village.Biome))
+                {
+                    buyMultiplier += 0.06;
+                    sellMultiplier -= 0.06;
                 }
 
-                npcHappiness.Add(Npc.Id, [buyMultiplier, sellMultiplier]);
+                foreach(var villageNpc in village.NPCs.Where(x => x != Npc))
+                {
+                    if (relations.LovedNpcs.Contains(villageNpc.Id))
+                    {
+                        buyMultiplier -= 0.12;
+                        sellMultiplier += 0.14;
+                    }
+                    else if (relations.LikedNpcs.Contains(villageNpc.Id))
+                    {
+                        buyMultiplier -= 0.6;
+                        sellMultiplier += 0.6;
+                    }
+                    else if (relations.HatedNpcs.Contains(villageNpc.Id))
+                    {
+                        buyMultiplier += 0.12;
+                        sellMultiplier -= 0.11;
+                    }
+                    else if (relations.DislikedNpcs.Contains(villageNpc.Id))
+                    {
+                        buyMultiplier += 0.6;
+                        sellMultiplier -= 0.6;
+                    }
+                }
+
+                npcHappiness.Add(new Npc { Id = Npc.Id, BuyMultiplier = Npc.BuyMultiplier, SellMultiplier = Npc.SellMultiplier});
             }
 
             return npcHappiness;

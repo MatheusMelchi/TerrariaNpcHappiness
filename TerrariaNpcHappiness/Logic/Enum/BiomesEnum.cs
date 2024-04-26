@@ -47,6 +47,9 @@ namespace TerrariaNpcHappiness.Logic.Enum
         UndergroundHallow = 13,
         
         [Description("Underground Evil - Curruption/Crimson")]
-        UndergroundEvil = 14
+        UndergroundEvil = 14,
+
+        [Description("Underground")]
+        Underground = 15,
     }
 }
