@@ -7,7 +7,7 @@ namespace TerrariaNpcHappiness.Logic.Classes
     {
         public NPCIdentificationEnum Id { get; set; }
         public string? Name { get { return this.Id.AsString(EnumFormat.Description); } }
-        public decimal? BuyMultiplier { get; set; }
-        public decimal? SellMultiplier { get; set; }
+        public double? BuyMultiplier { get; set; }
+        public double? SellMultiplier { get; set; }
     }
 }

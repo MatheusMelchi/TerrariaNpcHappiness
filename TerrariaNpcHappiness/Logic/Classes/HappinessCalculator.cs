@@ -32,9 +32,9 @@ namespace TerrariaNpcHappiness.Logic.Classes
                     sellMultiplier -= 0.05;
                 }
 
-                if(village.NPCs.Select(x => x.Id == NPCIdentificationEnum.Princess).Any())
+                if(village.NPCs.Where(x => x.Id == NPCIdentificationEnum.Princess).Any())
                 {
-                    buyMultiplier -= 0.06;
+                    buyMultiplier -= 0.06; 
                     sellMultiplier += 0.06;
                 }
 
@@ -73,7 +73,17 @@ namespace TerrariaNpcHappiness.Logic.Classes
                     }
                 }
 
-                npcHappiness.Add(new Npc { Id = Npc.Id, BuyMultiplier = Npc.BuyMultiplier, SellMultiplier = Npc.SellMultiplier});
+                if (buyMultiplier < 0.67)
+                    buyMultiplier = 0.67;
+                else if (buyMultiplier > 1.5)
+                    buyMultiplier = 1.5;
+
+                if (sellMultiplier < 0.67)
+                    sellMultiplier = 0.67;
+                else if (sellMultiplier > 1.5)
+                    sellMultiplier = 1.5;
+
+                npcHappiness.Add(new Npc { Id = Npc.Id, BuyMultiplier = buyMultiplier, SellMultiplier = sellMultiplier });
             }
 
             return npcHappiness;
